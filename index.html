@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard - Labor Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .controls {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            align-items: end;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .control-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        select, input, button {
+            padding: 10px 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+        
+        select:focus, input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .stat-value.percentage {
+            color: #667eea;
+        }
+        
+        .stat-value.warning {
+            color: #f59e0b;
+        }
+        
+        .stat-value.danger {
+            color: #ef4444;
+        }
+        
+        .stat-value.good {
+            color: #10b981;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            padding: 20px 24px;
+            border-bottom: 2px solid #f0f0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .export-btn {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: #f8f9fa;
+        }
+        
+        th {
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            padding: 16px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .store-name {
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .check-time {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #e0e7ff;
+            color: #667eea;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .amount {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+        }
+        
+        .percentage-cell {
+            font-weight: 700;
+            font-size: 16px;
+        }
+        
+        .percentage-good {
+            color: #10b981;
+        }
+        
+        .percentage-warning {
+            color: #f59e0b;
+        }
+        
+        .percentage-danger {
+            color: #ef4444;
+        }
+        
+        .timestamp {
+            color: #999;
+            font-size: 13px;
+        }
+        
+        .no-data {
+            padding: 60px;
+            text-align: center;
+            color: #999;
+            font-size: 16px;
+        }
+        
+        .alert-section {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .alert-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ef4444;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .alert-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .alert-item {
+            padding: 16px;
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .alert-store {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .alert-percentage {
+            font-size: 20px;
+            font-weight: 700;
+            color: #ef4444;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            table {
+                min-width: 800px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Manager Dashboard</h1>
+            <p id="current-date"></p>
+        </div>
+        
+        <div class="controls">
+            <div class="control-group">
+                <label for="dateFilter">Date</label>
+                <input type="date" id="dateFilter">
+            </div>
+            <div class="control-group">
+                <label for="storeFilter">Filter by Store</label>
+                <select id="storeFilter">
+                    <option value="">All Stores</option>
+                    <option value="2444 Leighway - KY2524">2444 Leighway - KY2524</option>
+                    <option value="Palomar - KY2842">Palomar - KY2842</option>
+                    <option value="Connector Road - KY3286">Connector Road - KY3286</option>
+                    <option value="Danville - KY2086">Danville - KY2086</option>
+                    <option value="Euclid - KY2114">Euclid - KY2114</option>
+                    <option value="Frankfort - KY2294">Frankfort - KY2294</option>
+                    <option value="Sir Barton - KY2521">Sir Barton - KY2521</option>
+                    <option value="Tiverton - KY2274">Tiverton - KY2274</option>
+                    <option value="Hurstbourne - KY2546">Hurstbourne - KY2546</option>
+                    <option value="Preston - KY2811">Preston - KY2811</option>
+                    <option value="Middletown - KY2837">Middletown - KY2837</option>
+                    <option value="Harley Center - KY2098">Harley Center - KY2098</option>
+                    <option value="Summit - KY2131">Summit - KY2131</option>
+                    <option value="Charlestown - IN2431">Charlestown - IN2431</option>
+                    <option value="Poplar Level - KY2641">Poplar Level - KY2641</option>
+                    <option value="Dixie Highway - KY2731">Dixie Highway - KY2731</option>
+                    <option value="Veterans - IN2880">Veterans - IN2880</option>
+                    <option value="Wesley Commons - IN3044">Wesley Commons - IN3044</option>
+                    <option value="Jeffersonville - IN2021">Jeffersonville - IN2021</option>
+                    <option value="Breckenridge Lane - KY2029">Breckenridge Lane - KY2029</option>
+                    <option value="Schuster - KY2493">Schuster - KY2493</option>
+                    <option value="Westport Village - KY2632">Westport Village - KY2632</option>
+                    <option value="S. 4th St - KY2713">S. 4th St - KY2713</option>
+                    <option value="University of Louisville - KY2753">University of Louisville - KY2753</option>
+                    <option value="Blankenbaker - KY2888">Blankenbaker - KY2888</option>
+                    <option value="Elizabethtown - KY2937">Elizabethtown - KY2937</option>
+                    <option value="Jefferson Commons - KY2166">Jefferson Commons - KY2166</option>
+                    <option value="Carson - PA2166">Carson - PA2166</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="timeFilter">Filter by Time</label>
+                <select id="timeFilter">
+                    <option value="">All Times</option>
+                    <option value="1pm">1pm</option>
+                    <option value="4pm">4pm</option>
+                    <option value="7pm">7pm</option>
+                    <option value="Close">Close</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label>&nbsp;</label>
+                <button onclick="refreshData()">🔄 Refresh</button>
+            </div>
+        </div>
+        
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-label">Total Entries</div>
+                <div class="stat-value" id="totalEntries">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Sales</div>
+                <div class="stat-value" id="totalSales">$0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Labor</div>
+                <div class="stat-value" id="totalLabor">$0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Average Labor %</div>
+                <div class="stat-value percentage" id="avgPercentage">0%</div>
+            </div>
+        </div>
+        
+        <div class="alert-section" id="alertSection" style="display: none;">
+            <div class="alert-title">
+                ⚠️ High Labor Alerts (>35%)
+            </div>
+            <div class="alert-list" id="alertList"></div>
+        </div>
+        
+        <div class="table-container">
+            <div class="table-header">
+                <h2 class="table-title">All Entries</h2>
+                <button class="export-btn" onclick="exportToCSV()">📥 Export to CSV</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Store</th>
+                        <th>Check Time</th>
+                        <th>Gross Sales</th>
+                        <th>Labor Dollars</th>
+                        <th>Labor %</th>
+                        <th>Timestamp</th>
+                    </tr>
+                </thead>
+                <tbody id="dataTable">
+                    <tr>
+                        <td colspan="6" class="no-data">No entries found</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCg6sdwxr788HymNLHF3skIro7P6SWrvHE",
+            authDomain: "labor-tracker-bbbaa.firebaseapp.com",
+            projectId: "labor-tracker-bbbaa",
+            storageBucket: "labor-tracker-bbbaa.firebasestorage.app",
+            messagingSenderId: "939951401620",
+            appId: "1:939951401620:web:f2cd20c38c8e36a5466281"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        // Display current date
+        const dateElement = document.getElementById('current-date');
+        const dateFilter = document.getElementById('dateFilter');
+        const today = new Date();
+        
+        dateElement.textContent = today.toLocaleDateString('en-US', { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric' 
+        });
+        
+        // Set default date to today
+        dateFilter.valueAsDate = today;
+        
+        // Load and filter data
+        async function loadData() {
+            const selectedDate = dateFilter.value;
+            const storeFilter = document.getElementById('storeFilter').value;
+            const timeFilter = document.getElementById('timeFilter').value;
+            
+            if (!selectedDate) return [];
+            
+            try {
+                // Query Firestore
+                let q = query(
+                    collection(db, 'labor_entries'),
+                    where('date', '==', selectedDate)
+                );
+                
+                const querySnapshot = await getDocs(q);
+                let entries = [];
+                querySnapshot.forEach((doc) => {
+                    entries.push(doc.data());
+                });
+                
+                // Apply client-side filters
+                if (storeFilter) {
+                    entries = entries.filter(e => e.store === storeFilter);
+                }
+                if (timeFilter) {
+                    entries = entries.filter(e => e.checkTime === timeFilter);
+                }
+                
+                return entries;
+            } catch (error) {
+                console.error('Error loading data:', error);
+                return [];
+            }
+        }
+        
+        // Update statistics
+        function updateStats(entries) {
+            const totalEntries = entries.length;
+            const totalSales = entries.reduce((sum, e) => sum + parseFloat(e.grossSales), 0);
+            const totalLabor = entries.reduce((sum, e) => sum + parseFloat(e.laborDollars), 0);
+            const avgPercentage = totalSales > 0 ? (totalLabor / totalSales) * 100 : 0;
+            
+            document.getElementById('totalEntries').textContent = totalEntries;
+            document.getElementById('totalSales').textContent = '$' + totalSales.toFixed(2);
+            document.getElementById('totalLabor').textContent = '$' + totalLabor.toFixed(2);
+            
+            const avgElement = document.getElementById('avgPercentage');
+            avgElement.textContent = avgPercentage.toFixed(1) + '%';
+            avgElement.className = 'stat-value percentage';
+            
+            if (avgPercentage > 35) {
+                avgElement.classList.add('danger');
+            } else if (avgPercentage > 30) {
+                avgElement.classList.add('warning');
+            } else if (avgPercentage > 0) {
+                avgElement.classList.add('good');
+            }
+        }
+        
+        // Update alerts
+        function updateAlerts(entries) {
+            const alerts = entries.filter(e => parseFloat(e.percentage) > 35);
+            const alertSection = document.getElementById('alertSection');
+            const alertList = document.getElementById('alertList');
+            
+            if (alerts.length === 0) {
+                alertSection.style.display = 'none';
+                return;
+            }
+            
+            alertSection.style.display = 'block';
+            alertList.innerHTML = alerts
+                .sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage))
+                .map(alert => `
+                    <div class="alert-item">
+                        <div>
+                            <div class="alert-store">${alert.store}</div>
+                            <div style="color: #666; font-size: 14px; margin-top: 4px;">
+                                ${alert.checkTime} Check - ${new Date(alert.timestamp).toLocaleTimeString('en-US', {
+                                    hour: 'numeric',
+                                    minute: '2-digit'
+                                })}
+                            </div>
+                        </div>
+                        <div class="alert-percentage">${alert.percentage}%</div>
+                    </div>
+                `).join('');
+        }
+        
+        // Update table
+        function updateTable(entries) {
+            const tableBody = document.getElementById('dataTable');
+            
+            if (entries.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" class="no-data">No entries found</td></tr>';
+                return;
+            }
+            
+            tableBody.innerHTML = entries
+                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                .map(entry => {
+                    const percentage = parseFloat(entry.percentage);
+                    let percentageClass = 'percentage-good';
+                    if (percentage > 35) {
+                        percentageClass = 'percentage-danger';
+                    } else if (percentage > 30) {
+                        percentageClass = 'percentage-warning';
+                    }
+                    
+                    const timestamp = new Date(entry.timestamp);
+                    const timeStr = timestamp.toLocaleTimeString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit'
+                    });
+                    
+                    return `
+                        <tr>
+                            <td class="store-name">${entry.store}</td>
+                            <td><span class="check-time">${entry.checkTime}</span></td>
+                            <td class="amount">$${parseFloat(entry.grossSales).toFixed(2)}</td>
+                            <td class="amount">$${parseFloat(entry.laborDollars).toFixed(2)}</td>
+                            <td class="percentage-cell ${percentageClass}">${entry.percentage}%</td>
+                            <td class="timestamp">${timeStr}</td>
+                        </tr>
+                    `;
+                }).join('');
+        }
+        
+        // Refresh all data
+        async function refreshData() {
+            const entries = await loadData();
+            updateStats(entries);
+            updateAlerts(entries);
+            updateTable(entries);
+        }
+        
+        // Export to CSV
+        async function exportToCSV() {
+            const entries = await loadData();
+            
+            if (entries.length === 0) {
+                alert('No data to export');
+                return;
+            }
+            
+            const headers = ['Store', 'Check Time', 'Gross Sales', 'Labor Dollars', 'Labor %', 'Timestamp'];
+            const rows = entries.map(e => [
+                e.store,
+                e.checkTime,
+                e.grossSales,
+                e.laborDollars,
+                e.percentage,
+                new Date(e.timestamp).toLocaleString()
+            ]);
+            
+            let csv = headers.join(',') + '\n';
+            rows.forEach(row => {
+                csv += row.map(cell => `"${cell}"`).join(',') + '\n';
+            });
+            
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `labor-data-${dateFilter.value}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+        
+        // Make functions available globally
+        window.refreshData = refreshData;
+        window.exportToCSV = exportToCSV;
+        
+        // Event listeners
+        dateFilter.addEventListener('change', refreshData);
+        document.getElementById('storeFilter').addEventListener('change', refreshData);
+        document.getElementById('timeFilter').addEventListener('change', refreshData);
+        
+        // Initial load
+        refreshData();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(refreshData, 30000);
+    </script>
+</body>
+</html>
