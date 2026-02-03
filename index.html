@@ -19,7 +19,7 @@
         }
         
         .container {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
         }
         
@@ -48,10 +48,13 @@
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             margin-bottom: 30px;
+        }
+        
+        .controls-row {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
-            align-items: end;
+            margin-bottom: 16px;
         }
         
         .control-group {
@@ -90,6 +93,36 @@
         
         button:hover {
             transform: translateY(-2px);
+        }
+        
+        .district-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .district-filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .district-filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .district-filter-btn:hover {
+            border-color: #667eea;
         }
         
         .stats-grid {
@@ -141,6 +174,7 @@
             border-radius: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             overflow: hidden;
+            margin-bottom: 30px;
         }
         
         .table-header {
@@ -285,7 +319,7 @@
         }
         
         @media (max-width: 768px) {
-            .controls {
+            .controls-row {
                 grid-template-columns: 1fr;
             }
             
@@ -311,57 +345,60 @@
         </div>
         
         <div class="controls">
-            <div class="control-group">
-                <label for="dateFilter">Date</label>
-                <input type="date" id="dateFilter">
+            <div class="controls-row">
+                <div class="control-group">
+                    <label for="viewMode">View Mode</label>
+                    <select id="viewMode">
+                        <option value="day">Day</option>
+                        <option value="week">Week</option>
+                        <option value="period">Period</option>
+                    </select>
+                </div>
+                <div class="control-group" id="dateControl">
+                    <label for="dateFilter">Date</label>
+                    <input type="date" id="dateFilter">
+                </div>
+                <div class="control-group" id="periodControl" style="display:none;">
+                    <label for="periodFilter">Period</label>
+                    <select id="periodFilter">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+                <div class="control-group" id="weekControl" style="display:none;">
+                    <label for="weekFilter">Week</label>
+                    <select id="weekFilter">
+                        <option value="1">Week 1</option>
+                        <option value="2">Week 2</option>
+                        <option value="3">Week 3</option>
+                        <option value="4">Week 4</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="timeFilter">Check Time</label>
+                    <select id="timeFilter">
+                        <option value="">All Times</option>
+                        <option value="1pm">1pm</option>
+                        <option value="4pm">4pm</option>
+                        <option value="7pm">7pm</option>
+                        <option value="Close">Close</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>&nbsp;</label>
+                    <button onclick="refreshData()">🔄 Refresh</button>
+                </div>
             </div>
+            
             <div class="control-group">
-                <label for="storeFilter">Filter by Store</label>
-                <select id="storeFilter">
-                    <option value="">All Stores</option>
-                    <option value="2444 Leighway - KY2524">2444 Leighway - KY2524</option>
-                    <option value="Palomar - KY2842">Palomar - KY2842</option>
-                    <option value="Connector Road - KY3286">Connector Road - KY3286</option>
-                    <option value="Danville - KY2086">Danville - KY2086</option>
-                    <option value="Euclid - KY2114">Euclid - KY2114</option>
-                    <option value="Frankfort - KY2294">Frankfort - KY2294</option>
-                    <option value="Sir Barton - KY2521">Sir Barton - KY2521</option>
-                    <option value="Tiverton - KY2274">Tiverton - KY2274</option>
-                    <option value="Hurstbourne - KY2546">Hurstbourne - KY2546</option>
-                    <option value="Preston - KY2811">Preston - KY2811</option>
-                    <option value="Middletown - KY2837">Middletown - KY2837</option>
-                    <option value="Harley Center - KY2098">Harley Center - KY2098</option>
-                    <option value="Summit - KY2131">Summit - KY2131</option>
-                    <option value="Charlestown - IN2431">Charlestown - IN2431</option>
-                    <option value="Poplar Level - KY2641">Poplar Level - KY2641</option>
-                    <option value="Dixie Highway - KY2731">Dixie Highway - KY2731</option>
-                    <option value="Veterans - IN2880">Veterans - IN2880</option>
-                    <option value="Wesley Commons - IN3044">Wesley Commons - IN3044</option>
-                    <option value="Jeffersonville - IN2021">Jeffersonville - IN2021</option>
-                    <option value="Breckenridge Lane - KY2029">Breckenridge Lane - KY2029</option>
-                    <option value="Schuster - KY2493">Schuster - KY2493</option>
-                    <option value="Westport Village - KY2632">Westport Village - KY2632</option>
-                    <option value="S. 4th St - KY2713">S. 4th St - KY2713</option>
-                    <option value="University of Louisville - KY2753">University of Louisville - KY2753</option>
-                    <option value="Blankenbaker - KY2888">Blankenbaker - KY2888</option>
-                    <option value="Elizabethtown - KY2937">Elizabethtown - KY2937</option>
-                    <option value="Jefferson Commons - KY2166">Jefferson Commons - KY2166</option>
-                    <option value="Carson - PA2166">Carson - PA2166</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="timeFilter">Filter by Time</label>
-                <select id="timeFilter">
-                    <option value="">All Times</option>
-                    <option value="1pm">1pm</option>
-                    <option value="4pm">4pm</option>
-                    <option value="7pm">7pm</option>
-                    <option value="Close">Close</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label>&nbsp;</label>
-                <button onclick="refreshData()">🔄 Refresh</button>
+                <label>Filter by District</label>
+                <div class="district-filters" id="districtFilters">
+                    <button class="district-filter-btn active" data-district="all">All Districts</button>
+                    <button class="district-filter-btn" data-district="Benedict">Benedict</button>
+                    <button class="district-filter-btn" data-district="Faluconer">Faluconer</button>
+                    <button class="district-filter-btn" data-district="Maddox">Maddox</button>
+                    <button class="district-filter-btn" data-district="Reid">Reid</button>
+                    <button class="district-filter-btn" data-district="Spitznagel">Spitznagel</button>
+                </div>
             </div>
         </div>
         
@@ -399,7 +436,7 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Store</th>
+                        <th>Store(s)</th>
                         <th>Check Time</th>
                         <th>Gross Sales</th>
                         <th>Labor Dollars</th>
@@ -419,7 +456,7 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, query, where, getDocs, orderBy } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
 
         // Firebase configuration
         const firebaseConfig = {
@@ -435,34 +472,154 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         
-        // Display current date
+        // Store data organized by district
+        const districtStores = {
+            "Benedict": ["2444 - Richmond", "2524 - Palomar", "2842 - Georgetown"],
+            "Faluconer": ["2086 - Euclid", "2114 - Frankfort", "2294 - Sir Barton", "2521 - Tiverton"],
+            "Maddox": ["2274 - Hurstborne", "2546 - Preston", "2811 - Middletown", "2837 - Harley Center"],
+            "Reid": ["2098 - Summit", "2131 - Charlestown", "2431 - Poplar Level", "2641 - Dixie Hwy", "2731 - Veterans", "2880 - Wesley Commons", "3044 - Jeffersonville IN", "2166 - Carson"],
+            "Spitznagel": ["2021 - Breckenridge Ln", "2029 - Schuster", "2493 - Westport Village", "2632 - S 4th Street", "2713 - U OF L", "2753 - Blankenbaker", "2888 - Elizabethtown", "2937 - Jefferson Commons"]
+        };
+        
+        let selectedDistrict = 'all';
+        
+        // Period configuration
+        // Period 3 starts 2/16/2026, each period is 4 weeks (28 days)
+        const period3Start = new Date('2026-02-16');
+        
+        function getPeriodInfo(date) {
+            const targetDate = new Date(date);
+            const daysDiff = Math.floor((targetDate - period3Start) / (1000 * 60 * 60 * 24));
+            
+            // Calculate period (28 days per period)
+            let period = 3 + Math.floor(daysDiff / 28);
+            
+            // Handle periods before period 3
+            if (daysDiff < 0) {
+                period = 3 + Math.floor(daysDiff / 28);
+            }
+            
+            // Wrap around after period 13
+            while (period > 13) {
+                period -= 13;
+            }
+            while (period < 1) {
+                period += 13;
+            }
+            
+            // Calculate week within period (7 days per week)
+            const daysIntoPeriod = daysDiff >= 0 ? daysDiff % 28 : (28 + (daysDiff % 28)) % 28;
+            const week = Math.floor(daysIntoPeriod / 7) + 1;
+            
+            return { period, week };
+        }
+        
+        function getPeriodDateRange(period, week = null) {
+            // Calculate days from period 3 start
+            const periodOffset = (period - 3) * 28;
+            let startDate = new Date(period3Start);
+            startDate.setDate(startDate.getDate() + periodOffset);
+            
+            if (week) {
+                // Specific week
+                startDate.setDate(startDate.getDate() + (week - 1) * 7);
+                const endDate = new Date(startDate);
+                endDate.setDate(endDate.getDate() + 6);
+                return { startDate, endDate };
+            } else {
+                // Entire period
+                const endDate = new Date(startDate);
+                endDate.setDate(endDate.getDate() + 27);
+                return { startDate, endDate };
+            }
+        }
+        
+        // Display current date and period info
         const dateElement = document.getElementById('current-date');
         const dateFilter = document.getElementById('dateFilter');
         const today = new Date();
+        const currentPeriod = getPeriodInfo(today);
         
-        dateElement.textContent = today.toLocaleDateString('en-US', { 
+        dateElement.textContent = `${today.toLocaleDateString('en-US', { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
+        })} - Period ${currentPeriod.period}, Week ${currentPeriod.week}`;
+        
+        dateFilter.valueAsDate = today;
+        
+        // Populate period filter
+        const periodFilter = document.getElementById('periodFilter');
+        for (let i = 1; i <= 13; i++) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = `Period ${i}`;
+            if (i === currentPeriod.period) {
+                option.selected = true;
+            }
+            periodFilter.appendChild(option);
+        }
+        
+        // Set default week
+        document.getElementById('weekFilter').value = currentPeriod.week;
+        
+        // View mode control
+        const viewMode = document.getElementById('viewMode');
+        const dateControl = document.getElementById('dateControl');
+        const periodControl = document.getElementById('periodControl');
+        const weekControl = document.getElementById('weekControl');
+        
+        viewMode.addEventListener('change', () => {
+            const mode = viewMode.value;
+            dateControl.style.display = mode === 'day' ? 'flex' : 'none';
+            periodControl.style.display = mode === 'period' || mode === 'week' ? 'flex' : 'none';
+            weekControl.style.display = mode === 'week' ? 'flex' : 'none';
+            refreshData();
         });
         
-        // Set default date to today
-        dateFilter.valueAsDate = today;
+        // District filter buttons
+        document.getElementById('districtFilters').addEventListener('click', (e) => {
+            if (e.target.classList.contains('district-filter-btn')) {
+                document.querySelectorAll('.district-filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                e.target.classList.add('active');
+                selectedDistrict = e.target.dataset.district;
+                refreshData();
+            }
+        });
         
         // Load and filter data
         async function loadData() {
-            const selectedDate = dateFilter.value;
-            const storeFilter = document.getElementById('storeFilter').value;
+            const mode = viewMode.value;
             const timeFilter = document.getElementById('timeFilter').value;
             
-            if (!selectedDate) return [];
+            let startDate, endDate;
+            
+            if (mode === 'day') {
+                const selectedDate = dateFilter.value;
+                if (!selectedDate) return [];
+                startDate = endDate = selectedDate;
+            } else if (mode === 'week') {
+                const period = parseInt(periodFilter.value);
+                const week = parseInt(document.getElementById('weekFilter').value);
+                const range = getPeriodDateRange(period, week);
+                startDate = range.startDate.toISOString().split('T')[0];
+                endDate = range.endDate.toISOString().split('T')[0];
+            } else if (mode === 'period') {
+                const period = parseInt(periodFilter.value);
+                const range = getPeriodDateRange(period);
+                startDate = range.startDate.toISOString().split('T')[0];
+                endDate = range.endDate.toISOString().split('T')[0];
+            }
             
             try {
                 // Query Firestore
                 let q = query(
                     collection(db, 'labor_entries'),
-                    where('date', '==', selectedDate)
+                    where('date', '>=', startDate),
+                    where('date', '<=', endDate)
                 );
                 
                 const querySnapshot = await getDocs(q);
@@ -471,10 +628,15 @@
                     entries.push(doc.data());
                 });
                 
-                // Apply client-side filters
-                if (storeFilter) {
-                    entries = entries.filter(e => e.store === storeFilter);
+                // Apply district filter
+                if (selectedDistrict !== 'all') {
+                    const districtStoreList = districtStores[selectedDistrict];
+                    entries = entries.filter(entry => 
+                        entry.stores.some(store => districtStoreList.includes(store))
+                    );
                 }
+                
+                // Apply time filter
                 if (timeFilter) {
                     entries = entries.filter(e => e.checkTime === timeFilter);
                 }
@@ -494,8 +656,8 @@
             const avgPercentage = totalSales > 0 ? (totalLabor / totalSales) * 100 : 0;
             
             document.getElementById('totalEntries').textContent = totalEntries;
-            document.getElementById('totalSales').textContent = '$' + totalSales.toFixed(2);
-            document.getElementById('totalLabor').textContent = '$' + totalLabor.toFixed(2);
+            document.getElementById('totalSales').textContent = '$' + totalSales.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('totalLabor').textContent = '$' + totalLabor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             
             const avgElement = document.getElementById('avgPercentage');
             avgElement.textContent = avgPercentage.toFixed(1) + '%';
@@ -527,9 +689,11 @@
                 .map(alert => `
                     <div class="alert-item">
                         <div>
-                            <div class="alert-store">${alert.store}</div>
+                            <div class="alert-store">${alert.stores.join(', ')}</div>
                             <div style="color: #666; font-size: 14px; margin-top: 4px;">
-                                ${alert.checkTime} Check - ${new Date(alert.timestamp).toLocaleTimeString('en-US', {
+                                ${alert.checkTime} Check - ${new Date(alert.timestamp).toLocaleString('en-US', {
+                                    month: 'short',
+                                    day: 'numeric',
                                     hour: 'numeric',
                                     minute: '2-digit'
                                 })}
@@ -561,14 +725,16 @@
                     }
                     
                     const timestamp = new Date(entry.timestamp);
-                    const timeStr = timestamp.toLocaleTimeString('en-US', {
+                    const timeStr = timestamp.toLocaleString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
                         hour: 'numeric',
                         minute: '2-digit'
                     });
                     
                     return `
                         <tr>
-                            <td class="store-name">${entry.store}</td>
+                            <td class="store-name">${entry.stores.join(', ')}</td>
                             <td><span class="check-time">${entry.checkTime}</span></td>
                             <td class="amount">$${parseFloat(entry.grossSales).toFixed(2)}</td>
                             <td class="amount">$${parseFloat(entry.laborDollars).toFixed(2)}</td>
@@ -596,9 +762,9 @@
                 return;
             }
             
-            const headers = ['Store', 'Check Time', 'Gross Sales', 'Labor Dollars', 'Labor %', 'Timestamp'];
+            const headers = ['Store(s)', 'Check Time', 'Gross Sales', 'Labor Dollars', 'Labor %', 'Timestamp'];
             const rows = entries.map(e => [
-                e.store,
+                e.stores.join('; '),
                 e.checkTime,
                 e.grossSales,
                 e.laborDollars,
@@ -615,7 +781,17 @@
             const url = window.URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `labor-data-${dateFilter.value}.csv`;
+            
+            const mode = viewMode.value;
+            let filename = 'labor-data';
+            if (mode === 'day') {
+                filename += `-${dateFilter.value}`;
+            } else if (mode === 'period') {
+                filename += `-period${periodFilter.value}`;
+            } else if (mode === 'week') {
+                filename += `-period${periodFilter.value}-week${document.getElementById('weekFilter').value}`;
+            }
+            a.download = `${filename}.csv`;
             a.click();
             window.URL.revokeObjectURL(url);
         }
@@ -626,7 +802,8 @@
         
         // Event listeners
         dateFilter.addEventListener('change', refreshData);
-        document.getElementById('storeFilter').addEventListener('change', refreshData);
+        periodFilter.addEventListener('change', refreshData);
+        document.getElementById('weekFilter').addEventListener('change', refreshData);
         document.getElementById('timeFilter').addEventListener('change', refreshData);
         
         // Initial load
