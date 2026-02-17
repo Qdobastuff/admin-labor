@@ -436,9 +436,7 @@
         };
         
         let selectedStores = new Set();
-        Object.values(districtStores).forEach(stores => {
-            stores.forEach(store => selectedStores.add(`${store.id} - ${store.name}`));
-        });
+        // Start with no stores selected
         
         // Build store selector
         function buildStoreSelector() {
@@ -462,7 +460,7 @@
                 const districtCheckbox = document.createElement('input');
                 districtCheckbox.type = 'checkbox';
                 districtCheckbox.className = 'district-checkbox';
-                districtCheckbox.checked = true;
+                districtCheckbox.checked = false;
                 
                 const districtLabel = document.createElement('span');
                 districtLabel.className = 'district-name';
@@ -502,7 +500,7 @@
                     storeCheckbox.type = 'checkbox';
                     storeCheckbox.className = 'store-checkbox';
                     storeCheckbox.id = `store-${store.id}`;
-                    storeCheckbox.checked = true;
+                    storeCheckbox.checked = false;
                     
                     const storeLabel = document.createElement('label');
                     storeLabel.className = 'store-label';
@@ -567,6 +565,7 @@
         
         // Load data
         async function loadData() {
+            console.log('=== LOAD DATA CALLED ===');
             const mode = viewMode.value;
             const timeFilter = document.getElementById('timeFilter').value;
             
@@ -579,27 +578,48 @@
                 endDate = document.getElementById('endDateFilter').value;
             }
             
-            if (!startDate || !endDate) return [];
+            console.log('Mode:', mode);
+            console.log('Date range:', startDate, 'to', endDate);
+            console.log('Time filter:', timeFilter);
+            console.log('Selected stores:', selectedStores.size);
+            
+            if (!startDate || !endDate) {
+                console.log('No dates selected, returning empty array');
+                return [];
+            }
             
             try {
+                console.log('Querying Firestore...');
                 let q = db.collection('labor_entries')
                     .where('date', '>=', startDate)
                     .where('date', '<=', endDate);
                 
                 const querySnapshot = await q.get();
+                console.log('Query returned', querySnapshot.size, 'documents');
+                
                 let entries = [];
                 querySnapshot.forEach((doc) => {
                     entries.push(doc.data());
                 });
                 
+                console.log('Before filtering:', entries.length, 'entries');
+                
                 // Filter by selected stores
                 if (selectedStores.size > 0) {
-                    entries = entries.filter(entry => selectedStores.has(entry.store));
+                    entries = entries.filter(entry => {
+                        const matches = selectedStores.has(entry.store);
+                        if (!matches) {
+                            console.log('Filtering out:', entry.store);
+                        }
+                        return matches;
+                    });
+                    console.log('After store filter:', entries.length, 'entries');
                 }
                 
                 // Filter by time
                 if (timeFilter) {
                     entries = entries.filter(e => e.checkTime === timeFilter);
+                    console.log('After time filter:', entries.length, 'entries');
                 }
                 
                 return entries;
@@ -611,45 +631,56 @@
         
         // Refresh data
         window.refreshData = async function() {
-            const entries = await loadData();
-            
-            // Update stats
-            document.getElementById('totalEntries').textContent = entries.length;
-            
-            const totalSales = entries.reduce((sum, e) => sum + parseFloat(e.grossSales || 0), 0);
-            document.getElementById('totalSales').textContent = '$' + totalSales.toFixed(2);
-            
-            const totalLabor = entries.reduce((sum, e) => sum + parseFloat(e.laborDollars || 0), 0);
-            document.getElementById('totalLabor').textContent = '$' + totalLabor.toFixed(2);
-            
-            const avgPct = totalSales > 0 ? ((totalLabor / totalSales) * 100).toFixed(1) : '0.0';
-            const avgEl = document.getElementById('avgPercentage');
-            avgEl.textContent = avgPct + '%';
-            avgEl.className = 'stat-value ' + 
-                (parseFloat(avgPct) < 30 ? 'percentage-good' : 
-                 parseFloat(avgPct) < 35 ? 'percentage-warning' : 'percentage-danger');
-            
-            // Update table
-            const tbody = document.getElementById('dataTable');
-            if (entries.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="no-data">No data for selected filters</td></tr>';
-            } else {
-                tbody.innerHTML = entries
-                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-                    .map(entry => {
-                        const pct = parseFloat(entry.percentage);
-                        const pctClass = pct < 30 ? 'percentage-good' : pct < 35 ? 'percentage-warning' : 'percentage-danger';
-                        return `
-                            <tr>
-                                <td class="store-name">${entry.store}</td>
-                                <td>${entry.checkTime}</td>
-                                <td class="amount">$${parseFloat(entry.grossSales).toFixed(2)}</td>
-                                <td class="amount">$${parseFloat(entry.laborDollars).toFixed(2)}</td>
-                                <td class="${pctClass}">${entry.percentage}%</td>
-                                <td>${new Date(entry.timestamp).toLocaleString()}</td>
-                            </tr>
-                        `;
-                    }).join('');
+            console.log('=== REFRESH DATA CALLED ===');
+            try {
+                const entries = await loadData();
+                console.log('Loaded entries:', entries.length);
+                console.log('Entries data:', entries);
+                
+                // Update stats
+                document.getElementById('totalEntries').textContent = entries.length;
+                
+                const totalSales = entries.reduce((sum, e) => sum + parseFloat(e.grossSales || 0), 0);
+                document.getElementById('totalSales').textContent = '$' + totalSales.toFixed(2);
+                
+                const totalLabor = entries.reduce((sum, e) => sum + parseFloat(e.laborDollars || 0), 0);
+                document.getElementById('totalLabor').textContent = '$' + totalLabor.toFixed(2);
+                
+                const avgPct = totalSales > 0 ? ((totalLabor / totalSales) * 100).toFixed(1) : '0.0';
+                const avgEl = document.getElementById('avgPercentage');
+                avgEl.textContent = avgPct + '%';
+                avgEl.className = 'stat-value ' + 
+                    (parseFloat(avgPct) < 30 ? 'percentage-good' : 
+                     parseFloat(avgPct) < 35 ? 'percentage-warning' : 'percentage-danger');
+                
+                console.log('Stats updated');
+                
+                // Update table
+                const tbody = document.getElementById('dataTable');
+                if (entries.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6" class="no-data">No data for selected filters</td></tr>';
+                    console.log('No entries found');
+                } else {
+                    tbody.innerHTML = entries
+                        .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                        .map(entry => {
+                            const pct = parseFloat(entry.percentage);
+                            const pctClass = pct < 30 ? 'percentage-good' : pct < 35 ? 'percentage-warning' : 'percentage-danger';
+                            return `
+                                <tr>
+                                    <td class="store-name">${entry.store}</td>
+                                    <td>${entry.checkTime}</td>
+                                    <td class="amount">$${parseFloat(entry.grossSales).toFixed(2)}</td>
+                                    <td class="amount">$${parseFloat(entry.laborDollars).toFixed(2)}</td>
+                                    <td class="${pctClass}">${entry.percentage}%</td>
+                                    <td>${new Date(entry.timestamp).toLocaleString()}</td>
+                                </tr>
+                            `;
+                        }).join('');
+                    console.log('Table updated with', entries.length, 'entries');
+                }
+            } catch (error) {
+                console.error('Error in refreshData:', error);
             }
         };
         
