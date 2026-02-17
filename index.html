@@ -599,21 +599,26 @@
                 
                 let entries = [];
                 querySnapshot.forEach((doc) => {
-                    entries.push(doc.data());
+                    const data = doc.data();
+                    console.log('Entry data:', data);
+                    entries.push(data);
                 });
                 
                 console.log('Before filtering:', entries.length, 'entries');
                 
-                // Filter by selected stores
+                // Filter by selected stores - if none selected, show all
                 if (selectedStores.size > 0) {
                     entries = entries.filter(entry => {
-                        const matches = selectedStores.has(entry.store);
+                        const storeValue = entry.store || 'Unknown';
+                        const matches = selectedStores.has(storeValue);
                         if (!matches) {
-                            console.log('Filtering out:', entry.store);
+                            console.log('Filtering out:', storeValue);
                         }
                         return matches;
                     });
                     console.log('After store filter:', entries.length, 'entries');
+                } else {
+                    console.log('No stores selected, showing all entries');
                 }
                 
                 // Filter by time
