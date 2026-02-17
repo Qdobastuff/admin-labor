@@ -19,7 +19,7 @@
         }
         
         .container {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
         }
         
@@ -51,18 +51,23 @@
         }
         
         .controls-row {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            display: flex;
             gap: 16px;
             margin-bottom: 16px;
+            flex-wrap: wrap;
         }
         
         .control-group {
-            display: flex;
-            flex-direction: column;
+            flex: 1;
+            min-width: 200px;
         }
         
-        .control-group label {
+        .control-group.full-width {
+            flex: 100%;
+        }
+        
+        label {
+            display: block;
             font-weight: 600;
             margin-bottom: 8px;
             color: #333;
@@ -70,6 +75,7 @@
         }
         
         select, input, button {
+            width: 100%;
             padding: 10px 14px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
@@ -95,34 +101,80 @@
             transform: translateY(-2px);
         }
         
-        .district-filters {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            padding: 16px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        
-        .district-filter-btn {
-            padding: 8px 16px;
+        .store-selector {
             border: 2px solid #e0e0e0;
-            background: white;
-            border-radius: 20px;
+            border-radius: 8px;
+            padding: 16px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .district-section {
+            margin-bottom: 20px;
+        }
+        
+        .district-section:last-child {
+            margin-bottom: 0;
+        }
+        
+        .district-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: #f8f9fa;
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            transition: all 0.2s;
+            user-select: none;
         }
         
-        .district-filter-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
+        .district-header:hover {
+            background: #e9ecef;
         }
         
-        .district-filter-btn:hover {
-            border-color: #667eea;
+        .district-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+        
+        .district-name {
+            font-weight: 700;
+            color: #667eea;
+            font-size: 15px;
+        }
+        
+        .store-list {
+            margin-left: 28px;
+            display: grid;
+            gap: 8px;
+        }
+        
+        .store-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+        
+        .store-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .store-checkbox {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+        
+        .store-label {
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
         }
         
         .stats-grid {
@@ -153,103 +205,6 @@
             color: #333;
         }
         
-        .stat-value.percentage {
-            color: #667eea;
-        }
-        
-        .stat-value.warning {
-            color: #f59e0b;
-        }
-        
-        .stat-value.danger {
-            color: #ef4444;
-        }
-        
-        .stat-value.good {
-            color: #10b981;
-        }
-        
-        .table-container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-            margin-bottom: 30px;
-        }
-        
-        .table-header {
-            padding: 20px 24px;
-            border-bottom: 2px solid #f0f0f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .table-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #333;
-        }
-        
-        .export-btn {
-            padding: 8px 16px;
-            font-size: 14px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        thead {
-            background: #f8f9fa;
-        }
-        
-        th {
-            padding: 16px;
-            text-align: left;
-            font-weight: 600;
-            color: #666;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        
-        td {
-            padding: 16px;
-            border-bottom: 1px solid #f0f0f0;
-            color: #333;
-        }
-        
-        tbody tr:hover {
-            background: #f8f9fa;
-        }
-        
-        .store-name {
-            font-weight: 600;
-            color: #667eea;
-        }
-        
-        .check-time {
-            display: inline-block;
-            padding: 4px 12px;
-            background: #e0e7ff;
-            color: #667eea;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .amount {
-            font-family: 'Courier New', monospace;
-            font-weight: 600;
-        }
-        
-        .percentage-cell {
-            font-weight: 700;
-            font-size: 16px;
-        }
-        
         .percentage-good {
             color: #10b981;
         }
@@ -262,9 +217,61 @@
             color: #ef4444;
         }
         
-        .timestamp {
-            color: #999;
+        .data-table {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .table-header {
+            padding: 20px 24px;
+            border-bottom: 2px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-header h2 {
+            font-size: 20px;
+            color: #333;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 16px 24px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #666;
             font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        tr {
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .store-name {
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .amount {
+            font-family: 'Courier New', monospace;
+            color: #333;
         }
         
         .no-data {
@@ -272,68 +279,6 @@
             text-align: center;
             color: #999;
             font-size: 16px;
-        }
-        
-        .alert-section {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-        }
-        
-        .alert-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #ef4444;
-            margin-bottom: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .alert-list {
-            display: grid;
-            gap: 12px;
-        }
-        
-        .alert-item {
-            padding: 16px;
-            background: #fef2f2;
-            border-left: 4px solid #ef4444;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .alert-store {
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .alert-percentage {
-            font-size: 20px;
-            font-weight: 700;
-            color: #ef4444;
-        }
-        
-        @media (max-width: 768px) {
-            .controls-row {
-                grid-template-columns: 1fr;
-            }
-            
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .table-container {
-                overflow-x: auto;
-            }
-            
-            table {
-                min-width: 800px;
-            }
         }
     </style>
 </head>
@@ -345,34 +290,35 @@
         </div>
         
         <div class="controls">
+            <div class="control-group full-width">
+                <label>Filter by Store(s)</label>
+                <div class="store-selector" id="storeSelector"></div>
+            </div>
+            
             <div class="controls-row">
                 <div class="control-group">
                     <label for="viewMode">View Mode</label>
                     <select id="viewMode">
                         <option value="day">Day</option>
-                        <option value="week">Week</option>
-                        <option value="period">Period</option>
+                        <option value="daterange">Date Range</option>
                     </select>
                 </div>
+                
                 <div class="control-group" id="dateControl">
                     <label for="dateFilter">Date</label>
                     <input type="date" id="dateFilter">
                 </div>
-                <div class="control-group" id="periodControl" style="display:none;">
-                    <label for="periodFilter">Period</label>
-                    <select id="periodFilter">
-                        <!-- Populated dynamically -->
-                    </select>
+                
+                <div class="control-group" id="startDateControl" style="display:none;">
+                    <label for="startDateFilter">Start Date</label>
+                    <input type="date" id="startDateFilter">
                 </div>
-                <div class="control-group" id="weekControl" style="display:none;">
-                    <label for="weekFilter">Week</label>
-                    <select id="weekFilter">
-                        <option value="1">Week 1</option>
-                        <option value="2">Week 2</option>
-                        <option value="3">Week 3</option>
-                        <option value="4">Week 4</option>
-                    </select>
+                
+                <div class="control-group" id="endDateControl" style="display:none;">
+                    <label for="endDateFilter">End Date</label>
+                    <input type="date" id="endDateFilter">
                 </div>
+                
                 <div class="control-group">
                     <label for="timeFilter">Check Time</label>
                     <select id="timeFilter">
@@ -383,21 +329,10 @@
                         <option value="Close">Close</option>
                     </select>
                 </div>
+                
                 <div class="control-group">
                     <label>&nbsp;</label>
                     <button onclick="refreshData()">🔄 Refresh</button>
-                </div>
-            </div>
-            
-            <div class="control-group">
-                <label>Filter by District</label>
-                <div class="district-filters" id="districtFilters">
-                    <button class="district-filter-btn active" data-district="all">All Districts</button>
-                    <button class="district-filter-btn" data-district="Benedict">Benedict</button>
-                    <button class="district-filter-btn" data-district="Faluconer">Faluconer</button>
-                    <button class="district-filter-btn" data-district="Maddox">Maddox</button>
-                    <button class="district-filter-btn" data-district="Reid">Reid</button>
-                    <button class="district-filter-btn" data-district="Spitznagel">Spitznagel</button>
                 </div>
             </div>
         </div>
@@ -416,27 +351,20 @@
                 <div class="stat-value" id="totalLabor">$0</div>
             </div>
             <div class="stat-card">
-                <div class="stat-label">Average Labor %</div>
-                <div class="stat-value percentage" id="avgPercentage">0%</div>
+                <div class="stat-label">Avg Labor %</div>
+                <div class="stat-value" id="avgPercentage">0%</div>
             </div>
         </div>
         
-        <div class="alert-section" id="alertSection" style="display: none;">
-            <div class="alert-title">
-                ⚠️ High Labor Alerts (>35%)
-            </div>
-            <div class="alert-list" id="alertList"></div>
-        </div>
-        
-        <div class="table-container">
+        <div class="data-table">
             <div class="table-header">
-                <h2 class="table-title">All Entries</h2>
-                <button class="export-btn" onclick="exportToCSV()">📥 Export to CSV</button>
+                <h2>Labor Entries</h2>
+                <button onclick="exportToCSV()">📥 Export CSV</button>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>Store(s)</th>
+                        <th>Store</th>
                         <th>Check Time</th>
                         <th>Gross Sales</th>
                         <th>Labor Dollars</th>
@@ -444,20 +372,14 @@
                         <th>Timestamp</th>
                     </tr>
                 </thead>
-                <tbody id="dataTable">
-                    <tr>
-                        <td colspan="6" class="no-data">No entries found</td>
-                    </tr>
-                </tbody>
+                <tbody id="dataTable"></tbody>
             </table>
         </div>
     </div>
     
-    <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getFirestore, collection, query, where, getDocs } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-app-compat.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.7.1/firebase-firestore-compat.min.js"></script>
+    <script>
         // Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyCg6sdwxr788HymNLHF3skIro7P6SWrvHE",
@@ -469,128 +391,181 @@
         };
 
         // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
         
-        // Store data organized by district
         const districtStores = {
-            "Benedict": ["2444 - Richmond", "2524 - Palomar", "2842 - Georgetown"],
-            "Faluconer": ["2086 - Euclid", "2114 - Frankfort", "2294 - Sir Barton", "2521 - Tiverton"],
-            "Maddox": ["2274 - Hurstborne", "2546 - Preston", "2811 - Middletown", "2837 - Harley Center"],
-            "Reid": ["2098 - Summit", "2131 - Charlestown", "2431 - Poplar Level", "2641 - Dixie Hwy", "2731 - Veterans", "2880 - Wesley Commons", "3044 - Jeffersonville IN", "2166 - Carson"],
-            "Spitznagel": ["2021 - Breckenridge Ln", "2029 - Schuster", "2493 - Westport Village", "2632 - S 4th Street", "2713 - U OF L", "2753 - Blankenbaker", "2888 - Elizabethtown", "2937 - Jefferson Commons"]
+            "Benedict": [
+                { id: "2444", name: "Richmond" },
+                { id: "2524", name: "Palomar" },
+                { id: "2842", name: "Georgetown" },
+                { id: "3286", name: "Danville" }
+            ],
+            "Faluconer": [
+                { id: "2086", name: "Euclid" },
+                { id: "2114", name: "Frankfort" },
+                { id: "2294", name: "Sir Barton" },
+                { id: "2521", name: "Tiverton" }
+            ],
+            "Maddox": [
+                { id: "2274", name: "Hurstborne" },
+                { id: "2546", name: "Preston" },
+                { id: "2811", name: "Middletown" },
+                { id: "2837", name: "Harley Center" }
+            ],
+            "Reid": [
+                { id: "2098", name: "Summit" },
+                { id: "2131", name: "Charlestown" },
+                { id: "2431", name: "Poplar Level" },
+                { id: "2641", name: "Dixie Hwy" },
+                { id: "2731", name: "Veterans" },
+                { id: "2880", name: "Wesley Commons" },
+                { id: "3044", name: "Jeffersonville IN" },
+                { id: "2166", name: "Carson" }
+            ],
+            "Spitznagel": [
+                { id: "2021", name: "Breckenridge Ln" },
+                { id: "2029", name: "Schuster" },
+                { id: "2493", name: "Westport Village" },
+                { id: "2632", name: "S 4th Street" },
+                { id: "2713", name: "U OF L" },
+                { id: "2753", name: "Blankenbaker" },
+                { id: "2888", name: "Elizabethtown" },
+                { id: "2937", name: "Jefferson Commons" }
+            ]
         };
         
-        let selectedDistrict = 'all';
+        let selectedStores = new Set();
+        Object.values(districtStores).forEach(stores => {
+            stores.forEach(store => selectedStores.add(`${store.id} - ${store.name}`));
+        });
         
-        // Period configuration
-        // Period 3 starts 2/16/2026, each period is 4 weeks (28 days)
-        const period3Start = new Date('2026-02-16');
-        
-        function getPeriodInfo(date) {
-            const targetDate = new Date(date);
-            const daysDiff = Math.floor((targetDate - period3Start) / (1000 * 60 * 60 * 24));
+        // Build store selector
+        function buildStoreSelector() {
+            console.log('Building store selector...');
+            const selector = document.getElementById('storeSelector');
+            console.log('Selector element:', selector);
             
-            // Calculate period (28 days per period)
-            let period = 3 + Math.floor(daysDiff / 28);
-            
-            // Handle periods before period 3
-            if (daysDiff < 0) {
-                period = 3 + Math.floor(daysDiff / 28);
+            if (!selector) {
+                console.error('Store selector element not found!');
+                return;
             }
             
-            // Wrap around after period 13
-            while (period > 13) {
-                period -= 13;
-            }
-            while (period < 1) {
-                period += 13;
-            }
-            
-            // Calculate week within period (7 days per week)
-            const daysIntoPeriod = daysDiff >= 0 ? daysDiff % 28 : (28 + (daysDiff % 28)) % 28;
-            const week = Math.floor(daysIntoPeriod / 7) + 1;
-            
-            return { period, week };
+            Object.keys(districtStores).forEach(districtName => {
+                console.log('Building district:', districtName);
+                const districtSection = document.createElement('div');
+                districtSection.className = 'district-section';
+                
+                const districtHeader = document.createElement('div');
+                districtHeader.className = 'district-header';
+                
+                const districtCheckbox = document.createElement('input');
+                districtCheckbox.type = 'checkbox';
+                districtCheckbox.className = 'district-checkbox';
+                districtCheckbox.checked = true;
+                
+                const districtLabel = document.createElement('span');
+                districtLabel.className = 'district-name';
+                districtLabel.textContent = districtName;
+                
+                districtHeader.appendChild(districtCheckbox);
+                districtHeader.appendChild(districtLabel);
+                
+                districtHeader.addEventListener('click', (e) => {
+                    if (e.target !== districtCheckbox) {
+                        districtCheckbox.checked = !districtCheckbox.checked;
+                    }
+                    // Toggle all stores in district
+                    districtStores[districtName].forEach(store => {
+                        const storeValue = `${store.id} - ${store.name}`;
+                        const storeCheckbox = document.getElementById(`store-${store.id}`);
+                        if (storeCheckbox) {
+                            storeCheckbox.checked = districtCheckbox.checked;
+                            if (districtCheckbox.checked) {
+                                selectedStores.add(storeValue);
+                            } else {
+                                selectedStores.delete(storeValue);
+                            }
+                        }
+                    });
+                    refreshData();
+                });
+                
+                const storeList = document.createElement('div');
+                storeList.className = 'store-list';
+                
+                districtStores[districtName].forEach(store => {
+                    const storeItem = document.createElement('div');
+                    storeItem.className = 'store-item';
+                    
+                    const storeCheckbox = document.createElement('input');
+                    storeCheckbox.type = 'checkbox';
+                    storeCheckbox.className = 'store-checkbox';
+                    storeCheckbox.id = `store-${store.id}`;
+                    storeCheckbox.checked = true;
+                    
+                    const storeLabel = document.createElement('label');
+                    storeLabel.className = 'store-label';
+                    storeLabel.textContent = `${store.id} - ${store.name}`;
+                    
+                    const storeValue = `${store.id} - ${store.name}`;
+                    storeCheckbox.addEventListener('change', (e) => {
+                        if (e.target.checked) {
+                            selectedStores.add(storeValue);
+                        } else {
+                            selectedStores.delete(storeValue);
+                        }
+                        refreshData();
+                    });
+                    
+                    storeItem.appendChild(storeCheckbox);
+                    storeItem.appendChild(storeLabel);
+                    storeList.appendChild(storeItem);
+                });
+                
+                districtSection.appendChild(districtHeader);
+                districtSection.appendChild(storeList);
+                selector.appendChild(districtSection);
+            });
+            console.log('Store selector built successfully!');
         }
         
-        function getPeriodDateRange(period, week = null) {
-            // Calculate days from period 3 start
-            const periodOffset = (period - 3) * 28;
-            let startDate = new Date(period3Start);
-            startDate.setDate(startDate.getDate() + periodOffset);
-            
-            if (week) {
-                // Specific week
-                startDate.setDate(startDate.getDate() + (week - 1) * 7);
-                const endDate = new Date(startDate);
-                endDate.setDate(endDate.getDate() + 6);
-                return { startDate, endDate };
-            } else {
-                // Entire period
-                const endDate = new Date(startDate);
-                endDate.setDate(endDate.getDate() + 27);
-                return { startDate, endDate };
-            }
-        }
+        // View mode change
+        const viewMode = document.getElementById('viewMode');
+        const dateControl = document.getElementById('dateControl');
+        const startDateControl = document.getElementById('startDateControl');
+        const endDateControl = document.getElementById('endDateControl');
         
-        // Display current date and period info
-        const dateElement = document.getElementById('current-date');
-        const dateFilter = document.getElementById('dateFilter');
+        viewMode.addEventListener('change', () => {
+            const mode = viewMode.value;
+            
+            if (mode === 'day') {
+                dateControl.style.display = 'block';
+                startDateControl.style.display = 'none';
+                endDateControl.style.display = 'none';
+            } else if (mode === 'daterange') {
+                dateControl.style.display = 'none';
+                startDateControl.style.display = 'block';
+                endDateControl.style.display = 'block';
+            }
+            
+            refreshData();
+        });
+        
+        // Set today's date
         const today = new Date();
-        const currentPeriod = getPeriodInfo(today);
-        
-        dateElement.textContent = `${today.toLocaleDateString('en-US', { 
+        const todayStr = today.toISOString().split('T')[0];
+        document.getElementById('current-date').textContent = today.toLocaleDateString('en-US', { 
             weekday: 'long', 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric' 
-        })} - Period ${currentPeriod.period}, Week ${currentPeriod.week}`;
-        
-        dateFilter.valueAsDate = today;
-        
-        // Populate period filter
-        const periodFilter = document.getElementById('periodFilter');
-        for (let i = 1; i <= 13; i++) {
-            const option = document.createElement('option');
-            option.value = i;
-            option.textContent = `Period ${i}`;
-            if (i === currentPeriod.period) {
-                option.selected = true;
-            }
-            periodFilter.appendChild(option);
-        }
-        
-        // Set default week
-        document.getElementById('weekFilter').value = currentPeriod.week;
-        
-        // View mode control
-        const viewMode = document.getElementById('viewMode');
-        const dateControl = document.getElementById('dateControl');
-        const periodControl = document.getElementById('periodControl');
-        const weekControl = document.getElementById('weekControl');
-        
-        viewMode.addEventListener('change', () => {
-            const mode = viewMode.value;
-            dateControl.style.display = mode === 'day' ? 'flex' : 'none';
-            periodControl.style.display = mode === 'period' || mode === 'week' ? 'flex' : 'none';
-            weekControl.style.display = mode === 'week' ? 'flex' : 'none';
-            refreshData();
         });
+        document.getElementById('dateFilter').value = todayStr;
+        document.getElementById('startDateFilter').value = todayStr;
+        document.getElementById('endDateFilter').value = todayStr;
         
-        // District filter buttons
-        document.getElementById('districtFilters').addEventListener('click', (e) => {
-            if (e.target.classList.contains('district-filter-btn')) {
-                document.querySelectorAll('.district-filter-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                e.target.classList.add('active');
-                selectedDistrict = e.target.dataset.district;
-                refreshData();
-            }
-        });
-        
-        // Load and filter data
+        // Load data
         async function loadData() {
             const mode = viewMode.value;
             const timeFilter = document.getElementById('timeFilter').value;
@@ -598,45 +573,31 @@
             let startDate, endDate;
             
             if (mode === 'day') {
-                const selectedDate = dateFilter.value;
-                if (!selectedDate) return [];
-                startDate = endDate = selectedDate;
-            } else if (mode === 'week') {
-                const period = parseInt(periodFilter.value);
-                const week = parseInt(document.getElementById('weekFilter').value);
-                const range = getPeriodDateRange(period, week);
-                startDate = range.startDate.toISOString().split('T')[0];
-                endDate = range.endDate.toISOString().split('T')[0];
-            } else if (mode === 'period') {
-                const period = parseInt(periodFilter.value);
-                const range = getPeriodDateRange(period);
-                startDate = range.startDate.toISOString().split('T')[0];
-                endDate = range.endDate.toISOString().split('T')[0];
+                startDate = endDate = document.getElementById('dateFilter').value;
+            } else {
+                startDate = document.getElementById('startDateFilter').value;
+                endDate = document.getElementById('endDateFilter').value;
             }
             
+            if (!startDate || !endDate) return [];
+            
             try {
-                // Query Firestore
-                let q = query(
-                    collection(db, 'labor_entries'),
-                    where('date', '>=', startDate),
-                    where('date', '<=', endDate)
-                );
+                let q = db.collection('labor_entries')
+                    .where('date', '>=', startDate)
+                    .where('date', '<=', endDate);
                 
-                const querySnapshot = await getDocs(q);
+                const querySnapshot = await q.get();
                 let entries = [];
                 querySnapshot.forEach((doc) => {
                     entries.push(doc.data());
                 });
                 
-                // Apply district filter
-                if (selectedDistrict !== 'all') {
-                    const districtStoreList = districtStores[selectedDistrict];
-                    entries = entries.filter(entry => 
-                        entry.stores.some(store => districtStoreList.includes(store))
-                    );
+                // Filter by selected stores
+                if (selectedStores.size > 0) {
+                    entries = entries.filter(entry => selectedStores.has(entry.store));
                 }
                 
-                // Apply time filter
+                // Filter by time
                 if (timeFilter) {
                     entries = entries.filter(e => e.checkTime === timeFilter);
                 }
@@ -648,123 +609,61 @@
             }
         }
         
-        // Update statistics
-        function updateStats(entries) {
-            const totalEntries = entries.length;
-            const totalSales = entries.reduce((sum, e) => sum + parseFloat(e.grossSales), 0);
-            const totalLabor = entries.reduce((sum, e) => sum + parseFloat(e.laborDollars), 0);
-            const avgPercentage = totalSales > 0 ? (totalLabor / totalSales) * 100 : 0;
+        // Refresh data
+        window.refreshData = async function() {
+            const entries = await loadData();
             
-            document.getElementById('totalEntries').textContent = totalEntries;
-            document.getElementById('totalSales').textContent = '$' + totalSales.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-            document.getElementById('totalLabor').textContent = '$' + totalLabor.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            // Update stats
+            document.getElementById('totalEntries').textContent = entries.length;
             
-            const avgElement = document.getElementById('avgPercentage');
-            avgElement.textContent = avgPercentage.toFixed(1) + '%';
-            avgElement.className = 'stat-value percentage';
+            const totalSales = entries.reduce((sum, e) => sum + parseFloat(e.grossSales || 0), 0);
+            document.getElementById('totalSales').textContent = '$' + totalSales.toFixed(2);
             
-            if (avgPercentage > 35) {
-                avgElement.classList.add('danger');
-            } else if (avgPercentage > 30) {
-                avgElement.classList.add('warning');
-            } else if (avgPercentage > 0) {
-                avgElement.classList.add('good');
-            }
-        }
-        
-        // Update alerts
-        function updateAlerts(entries) {
-            const alerts = entries.filter(e => parseFloat(e.percentage) > 35);
-            const alertSection = document.getElementById('alertSection');
-            const alertList = document.getElementById('alertList');
+            const totalLabor = entries.reduce((sum, e) => sum + parseFloat(e.laborDollars || 0), 0);
+            document.getElementById('totalLabor').textContent = '$' + totalLabor.toFixed(2);
             
-            if (alerts.length === 0) {
-                alertSection.style.display = 'none';
-                return;
-            }
+            const avgPct = totalSales > 0 ? ((totalLabor / totalSales) * 100).toFixed(1) : '0.0';
+            const avgEl = document.getElementById('avgPercentage');
+            avgEl.textContent = avgPct + '%';
+            avgEl.className = 'stat-value ' + 
+                (parseFloat(avgPct) < 30 ? 'percentage-good' : 
+                 parseFloat(avgPct) < 35 ? 'percentage-warning' : 'percentage-danger');
             
-            alertSection.style.display = 'block';
-            alertList.innerHTML = alerts
-                .sort((a, b) => parseFloat(b.percentage) - parseFloat(a.percentage))
-                .map(alert => `
-                    <div class="alert-item">
-                        <div>
-                            <div class="alert-store">${alert.stores.join(', ')}</div>
-                            <div style="color: #666; font-size: 14px; margin-top: 4px;">
-                                ${alert.checkTime} Check - ${new Date(alert.timestamp).toLocaleString('en-US', {
-                                    month: 'short',
-                                    day: 'numeric',
-                                    hour: 'numeric',
-                                    minute: '2-digit'
-                                })}
-                            </div>
-                        </div>
-                        <div class="alert-percentage">${alert.percentage}%</div>
-                    </div>
-                `).join('');
-        }
-        
-        // Update table
-        function updateTable(entries) {
-            const tableBody = document.getElementById('dataTable');
-            
+            // Update table
+            const tbody = document.getElementById('dataTable');
             if (entries.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="6" class="no-data">No entries found</td></tr>';
-                return;
+                tbody.innerHTML = '<tr><td colspan="6" class="no-data">No data for selected filters</td></tr>';
+            } else {
+                tbody.innerHTML = entries
+                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
+                    .map(entry => {
+                        const pct = parseFloat(entry.percentage);
+                        const pctClass = pct < 30 ? 'percentage-good' : pct < 35 ? 'percentage-warning' : 'percentage-danger';
+                        return `
+                            <tr>
+                                <td class="store-name">${entry.store}</td>
+                                <td>${entry.checkTime}</td>
+                                <td class="amount">$${parseFloat(entry.grossSales).toFixed(2)}</td>
+                                <td class="amount">$${parseFloat(entry.laborDollars).toFixed(2)}</td>
+                                <td class="${pctClass}">${entry.percentage}%</td>
+                                <td>${new Date(entry.timestamp).toLocaleString()}</td>
+                            </tr>
+                        `;
+                    }).join('');
             }
-            
-            tableBody.innerHTML = entries
-                .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
-                .map(entry => {
-                    const percentage = parseFloat(entry.percentage);
-                    let percentageClass = 'percentage-good';
-                    if (percentage > 35) {
-                        percentageClass = 'percentage-danger';
-                    } else if (percentage > 30) {
-                        percentageClass = 'percentage-warning';
-                    }
-                    
-                    const timestamp = new Date(entry.timestamp);
-                    const timeStr = timestamp.toLocaleString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: '2-digit'
-                    });
-                    
-                    return `
-                        <tr>
-                            <td class="store-name">${entry.stores.join(', ')}</td>
-                            <td><span class="check-time">${entry.checkTime}</span></td>
-                            <td class="amount">$${parseFloat(entry.grossSales).toFixed(2)}</td>
-                            <td class="amount">$${parseFloat(entry.laborDollars).toFixed(2)}</td>
-                            <td class="percentage-cell ${percentageClass}">${entry.percentage}%</td>
-                            <td class="timestamp">${timeStr}</td>
-                        </tr>
-                    `;
-                }).join('');
-        }
+        };
         
-        // Refresh all data
-        async function refreshData() {
+        // Export CSV
+        window.exportToCSV = async function() {
             const entries = await loadData();
-            updateStats(entries);
-            updateAlerts(entries);
-            updateTable(entries);
-        }
-        
-        // Export to CSV
-        async function exportToCSV() {
-            const entries = await loadData();
-            
             if (entries.length === 0) {
                 alert('No data to export');
                 return;
             }
             
-            const headers = ['Store(s)', 'Check Time', 'Gross Sales', 'Labor Dollars', 'Labor %', 'Timestamp'];
+            const headers = ['Store', 'Check Time', 'Gross Sales', 'Labor Dollars', 'Labor %', 'Timestamp'];
             const rows = entries.map(e => [
-                e.stores.join('; '),
+                e.store,
                 e.checkTime,
                 e.grossSales,
                 e.laborDollars,
@@ -772,41 +671,23 @@
                 new Date(e.timestamp).toLocaleString()
             ]);
             
-            let csv = headers.join(',') + '\n';
-            rows.forEach(row => {
-                csv += row.map(cell => `"${cell}"`).join(',') + '\n';
-            });
-            
+            const csv = [headers, ...rows].map(row => row.join(',')).join('\n');
             const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
+            const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            
-            const mode = viewMode.value;
-            let filename = 'labor-data';
-            if (mode === 'day') {
-                filename += `-${dateFilter.value}`;
-            } else if (mode === 'period') {
-                filename += `-period${periodFilter.value}`;
-            } else if (mode === 'week') {
-                filename += `-period${periodFilter.value}-week${document.getElementById('weekFilter').value}`;
-            }
-            a.download = `${filename}.csv`;
+            a.download = `labor-data-${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
-            window.URL.revokeObjectURL(url);
-        }
-        
-        // Make functions available globally
-        window.refreshData = refreshData;
-        window.exportToCSV = exportToCSV;
+        };
         
         // Event listeners
-        dateFilter.addEventListener('change', refreshData);
-        periodFilter.addEventListener('change', refreshData);
-        document.getElementById('weekFilter').addEventListener('change', refreshData);
+        document.getElementById('dateFilter').addEventListener('change', refreshData);
+        document.getElementById('startDateFilter').addEventListener('change', refreshData);
+        document.getElementById('endDateFilter').addEventListener('change', refreshData);
         document.getElementById('timeFilter').addEventListener('change', refreshData);
         
-        // Initial load
+        // Initialize
+        buildStoreSelector();
         refreshData();
         
         // Auto-refresh every 30 seconds
