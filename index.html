@@ -510,9 +510,12 @@
                     storeCheckbox.addEventListener('change', (e) => {
                         if (e.target.checked) {
                             selectedStores.add(storeValue);
+                            console.log('Added to selected stores:', storeValue);
                         } else {
                             selectedStores.delete(storeValue);
+                            console.log('Removed from selected stores:', storeValue);
                         }
+                        console.log('Selected stores now:', Array.from(selectedStores));
                         refreshData();
                     });
                     
@@ -600,7 +603,12 @@
                 let entries = [];
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
-                    console.log('Entry data:', data);
+                    console.log('Entry:', {
+                        store: data.store,
+                        stores: data.stores,
+                        checkTime: data.checkTime,
+                        timestamp: data.timestamp
+                    });
                     entries.push(data);
                 });
                 
@@ -609,10 +617,22 @@
                 // Filter by selected stores - if none selected, show all
                 if (selectedStores.size > 0) {
                     entries = entries.filter(entry => {
-                        const storeValue = entry.store || 'Unknown';
-                        const matches = selectedStores.has(storeValue);
+                        // Handle both old format (store) and new format (stores array)
+                        let storeValues = [];
+                        if (entry.stores && Array.isArray(entry.stores)) {
+                            storeValues = entry.stores;
+                        } else if (entry.store) {
+                            storeValues = [entry.store];
+                        }
+                        
+                        console.log('Entry has stores:', storeValues, 'Selected:', Array.from(selectedStores));
+                        
+                        // Check if any of this entry's stores are selected
+                        const matches = storeValues.some(store => selectedStores.has(store));
                         if (!matches) {
-                            console.log('Filtering out:', storeValue);
+                            console.log('❌ No match for stores:', storeValues);
+                        } else {
+                            console.log('✅ Match found!');
                         }
                         return matches;
                     });
@@ -671,9 +691,18 @@
                         .map(entry => {
                             const pct = parseFloat(entry.percentage);
                             const pctClass = pct < 30 ? 'percentage-good' : pct < 35 ? 'percentage-warning' : 'percentage-danger';
+                            
+                            // Handle both old format (store) and new format (stores array)
+                            let storeDisplay = 'Unknown';
+                            if (entry.stores && Array.isArray(entry.stores)) {
+                                storeDisplay = entry.stores.join(', ');
+                            } else if (entry.store) {
+                                storeDisplay = entry.store;
+                            }
+                            
                             return `
                                 <tr>
-                                    <td class="store-name">${entry.store}</td>
+                                    <td class="store-name">${storeDisplay}</td>
                                     <td>${entry.checkTime}</td>
                                     <td class="amount">$${parseFloat(entry.grossSales).toFixed(2)}</td>
                                     <td class="amount">$${parseFloat(entry.laborDollars).toFixed(2)}</td>
