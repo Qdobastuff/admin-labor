@@ -486,7 +486,7 @@
                             }
                         }
                     });
-                    refreshData();
+                    // Don't auto-refresh - user will click refresh button when ready
                 });
                 
                 const storeList = document.createElement('div');
@@ -516,7 +516,7 @@
                             console.log('Removed from selected stores:', storeValue);
                         }
                         console.log('Selected stores now:', Array.from(selectedStores));
-                        refreshData();
+                        // Don't auto-refresh - user will click refresh button when ready
                     });
                     
                     storeItem.appendChild(storeCheckbox);
@@ -550,7 +550,7 @@
                 endDateControl.style.display = 'block';
             }
             
-            refreshData();
+            // Don't auto-refresh - user will click refresh button when ready
         });
         
         // Set today's date
@@ -745,11 +745,8 @@
             a.click();
         };
         
-        // Event listeners
-        document.getElementById('dateFilter').addEventListener('change', refreshData);
-        document.getElementById('startDateFilter').addEventListener('change', refreshData);
-        document.getElementById('endDateFilter').addEventListener('change', refreshData);
-        document.getElementById('timeFilter').addEventListener('change', refreshData);
+        // Event listeners - removed auto-refresh, user clicks refresh button when ready
+        // No event listeners needed - refresh button will trigger manually
         
         // Initialize
         buildStoreSelector();
